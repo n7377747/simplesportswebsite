@@ -1,0 +1,13 @@
+.container{
+    border: 0.5em solid black;
+    padding:10%;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+}
+
+button{
+    padding:1% 2%;
+    background-color: black;
+    color:whitesmoke;
+    border:0 none;
+}
