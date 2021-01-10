@@ -12,24 +12,29 @@
     </link>
 </head>
 
-<body background="https://cdn.searchenginejournal.com/wp-content/uploads/2017/11/e-commerce-link-building-1520x800.png">
-    <br/>
-    <form action="./register.php" method="post">
-    
-            <div class="row">
-                <div class="col-md-6 col-lg-4 justify-content-center container bg-white">
+<body background="https://thumbs.dreamstime.com/b/icon-set-black-simple-silhouette-sports-equipment-flat-design-vector-illustration-info-graphic-web-banners-71303689.jpg">
+    <br />
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4 container-2 align-items-center">
+
+                <form action="./register.php" method="post">
                     <h1> Registration </h1>
                     </br><input type="text" placeholder="Name" name="name"><br />
                     </br><input type="text" placeholder="Email address" name="email"><br />
                     </br><input type="text" placeholder="Contact no" name="contact"><br />
-                    </br><input type="password" placeholder="Password" name="password"><br /></br>
+                    </br><input type="password" placeholder="Password" name="password"><br />
+                    </br><input type="text" placeholder="Address" name="address"><br />
+                    </br><input type="text" placeholder="City" name="city"><br />
+                    </br><input type="text" placeholder="State" name="state"><br />
+                    </br><input type="text" placeholder="Zipcode" name="zipcode"></br>
+                    </br>
                     <button class="btn-dark btn-md text-white btn-lg" type="submit" name="submit" value="submit">Register</button>
                     <a class="btn-secondary btn-md text-white btn-lg" href="./login.php">login</a>
-                </div>
+                </form>
             </div>
-    
-    </form>
-    
+        </div>
+    </div>
 </body>
 
 </html>

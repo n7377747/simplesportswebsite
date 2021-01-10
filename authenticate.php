@@ -3,16 +3,16 @@
     $errors=array();
     if($_SERVER['REQUEST_METHOD']=="POST"){
         
-        $usn=$_POST['usn'];
+        $email=$_POST['email'];
         $password=$_POST['password'];
         
-        $con=mysqli_connect("localhost","root","","library");
+        $con=mysqli_connect("localhost","root","","sports");
 
         if($con->connect_error){array_push($errors,$con->connect_error);}
+        if (empty($usn)) { array_push($errors, "Email is required"); }
         if (empty($password)) { array_push($errors, "Password is required"); }
-        if (empty($usn)) { array_push($errors, "USN is required"); }
         
-        $user_check_query="select * from students where USN='$usn' and Password='$password'";
+        $user_check_query="select * from users where email='$email' and password='$password'";
         $result = mysqli_query($con, $user_check_query);
 
         $user = mysqli_fetch_assoc($result);
@@ -20,10 +20,12 @@
         if ($user) { // if user exists
            
           session_start();
-          $_SESSION['name']=$user['Name'];
-          $_SESSION['usn']=$user['USN'];
-          $_SESSION['email']=$user['Email'];
-        
+          $_SESSION['user_id']=$user['user_id'];
+          $_SESSION['name']=$user['name'];
+          $_SESSION['email']=$user['email'];
+          $_SESSION['address']=$user['address'];
+          $_SESSION['contact']=$user['contact'];
+          
           header('Location: ./home.php');
 
           }

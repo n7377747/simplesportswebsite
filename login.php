@@ -13,22 +13,23 @@
 </head>
 
 
-<body background="https://cdn.searchenginejournal.com/wp-content/uploads/2017/11/e-commerce-link-building-1520x800.png">
-    <br/>
-    <form action="./authenticate.php" method="post">
-       
-            <div class="row ">
-                <div class="col-md-6 col-lg-4 justify-content-center container bg-white">
+<body background="https://thumbs.dreamstime.com/b/icon-set-black-simple-silhouette-sports-equipment-flat-design-vector-illustration-info-graphic-web-banners-71303689.jpg">
+    <br />
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4 container-2 align-items-center">
+                <form action="./authenticate.php" method="post">
+
                     <h1>Login </h1>
                     </br><input type="text" placeholder="Email" name="email"><br />
                     </br><input type="password" placeholder="Password" name="password"><br /></br>
                     <button class="btn-dark text-white btn-lg" type="submit" name="submit">Login</button>
                     <a class="btn-secondary text-white btn-lg" href="./index.php">Register</a>
-                </div>
+
+                </form>
             </div>
-        
-    </form>
-    
+        </div>
+    </div>
 </body>
 
 </html>

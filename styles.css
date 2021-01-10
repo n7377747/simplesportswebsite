@@ -1,8 +1,9 @@
-.container{
+.container-2{
+    text-align: center;
     border: 0.5em solid black;
-    padding:10%;
+    padding:7%;
+    background-color: whitesmoke;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-
 }
 
 button{
@@ -11,3 +12,6 @@ button{
     color:whitesmoke;
     border:0 none;
 }
+
+
+
