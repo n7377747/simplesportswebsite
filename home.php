@@ -17,16 +17,19 @@
 </head>
 
 <body background="https://thumbs.dreamstime.com/b/icon-set-black-simple-silhouette-sports-equipment-flat-design-vector-illustration-info-graphic-web-banners-71303689.jpg">
-    <div  class='d-sm-flex flex-row  justify-content-between' style='background-color:black;color:white;padding:3px;'>
-    <h3>1sports.com</h3>
-    <div>
-    <form action="" method="post">
-                    <input type="text" placeholder="Type here" name="product_name">
-                    <button class="btn-dark btn-sm text-white" type="submit" name="search" value="search">
-                        Search_</button>
+    <div class='navbar d-sm-flex flex-row  justify-content-between' style='background-color:black;color:white;padding:3px;'>
+        <h3>1sports.com</h3>
+        <div>
+            <form action="" method="post">
+                <input type="text" placeholder="search for" name="product_name">
+                <button class="btn-dark btn-sm text-white" type="submit" name="search" value="search">
+                    Search</button>
+                <input type="int" placeholder="product ID " name="product_id">
 
-                        <form>
-    </div>
+                <button class="btn-dark btn-sm text-white" type="submit" name="reserve" value="reserve">
+                    Reserve</button>
+                <form>
+        </div>
     </div>
     <?php
     $errors = array();
@@ -37,8 +40,8 @@
     }
     ?>
     <center>
-        <div class='card' style='width: 18rem;'>
-            <div class='card-body' >
+        <div class='card' style='width: 25rem;'>
+            <div class='card-body'>
 
                 </br>
                 <h5 class='card-title'><?php echo "Hello {$_SESSION['name']}" ?></h5>
@@ -53,37 +56,51 @@
                 <form action='' method='post'>
                     <button class='btn-dark btn-sm text-white' type='submit' name='logout' value='logout'>
                         Logout</button>
-                    <button class='btn-secondary btn-sm text-white' type='submit' name='orders' value='orders'>
-                        My orders</button>    
+                    <button class='btn-secondary btn-sm text-white' name='orders' value='orders'>
+                    <a class='text-white'  href='./orders.php'>
+                        My orders</a></button></br>
+
                 </form>
             </div>
         </div>
     </center>
 
     </br>
-    <center>
-        <div class="card" style='width:43rem;'>
-            <div class="card-body" style='text-align: center;'>
-                <form action="" method="post">
-                    <input type="text" placeholder="Type here" name="product_name">
-                    <button class="btn-dark btn-sm text-white" type="submit" name="search" value="search">
-                        Search_</button>
-
-
-                    <input type="int" placeholder="product ID " name="product_id">
-                    <button class="btn-dark btn-sm text-white" type="submit" name="reserve" value="reserve">
-                        Reserve</button>
-
-                </form>
-            </div>
-        </div>
-
-    </center>
 
     <?php
+
+function product_card($product_id,$name,$mrp,$manufacturer,$description,$units){
+    $availability=$units==0?"<span class='text-danger'>Out of Stock</span>":
+                            "<span class='text-success'>$units in stock</span";
+
+    echo "
+    <div class='row'>
+        <div class='col-12'>
+            <div class='card'>
+                <div class='card-body'>
+                    <h6 class='card-title'>{$product_id} . {$name}</h6>
+                    <span class='text-secondary'>by {$manufacturer}</span>
+                    </br>
+                    <span style='margin:5px 0px;'>{$description}</span>
+                    </br>
+                    {$availability}
+                    </br>
+                    <h6>&#8377;{$mrp}</h6> 
+                </div>
+            </div>
+        </div>
+   </div>
+    ";
+   }
+
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == "POST") {
-       
+
         $con = mysqli_connect("localhost", "root", "", "sports");
+        if ($con->connect_error) {
+            array_push($errors, $con->connect_error);
+            exit();
+        }
+
         if (isset($_POST['reserve'])) {
             $book_query = "select * from products where product_id={$_POST['product_id']}";
             $result = mysqli_query($con, $book_query);
@@ -91,11 +108,14 @@
             if ($result) {
                 $row = mysqli_fetch_assoc($result);
                 if ($row['units'] > 0) {
-                    $row['units']-=1;
-                    $book_update_query = "UPDATE Books SET units={$row['units']} WHERE product_id={$_POST['product_id']}";
-                    $result = mysqli_query($con, $book_update_query);
-                    $reserve_query = "INSERT INTO orders ( user_id, product_id, Reserved_on) VALUES ( '{$_SESSION['user_id']}', '{$_POST['book_id']}', CURRENT_DATE())";
+                    $row['units'] -= 1;
+                    $update_query = "UPDATE products SET units={$row['units']} WHERE product_id={$_POST['product_id']}";
+                    $result = mysqli_query($con, $update_query);
+                    $reserve_query = "INSERT INTO orders ( user_id, product_id, date) VALUES ( {$_SESSION['user_id']}, {$_POST['product_id']}, CURRENT_DATE())";
                     $result = mysqli_query($con, $reserve_query);
+                    echo "<script>
+                        alert('Order placed successfully');
+                        </script>";
                 } else {
                     echo "<script>
                         alert('This product is out of stock....  please try again tomorrow');
@@ -103,89 +123,56 @@
                 }
             } else {
                 echo "<script>
-                    alert('please enter a valid book ID');
+                    alert('please enter a valid product ID');
                     </script>";
             }
+            unset($_POST['reserve']);
         }
+else if (isset($_POST['search']) && isset($_POST['product_name'])) {
 
-        if ($con->connect_error) {
-            array_push($errors, $con->connect_error);
-        }
-
-        if (isset($_POST['product_name'])) {
             $title = $_POST['product_name'];
             $user_check_query = "select * from products where name like '%$title%'";
             $result = mysqli_query($con, $user_check_query);
-
             if ($result) {
-
-                echo "<center>
-    <table class='table' style='width:50%' border='1'></center>
-    <h4> List of Books</h4>
-            <thead class='thead-dark'>
-                    <tr>
-                    <th>Book Id</th>
-                    <th>Name</th>
-                    <th>Author</th>       
-                    <th>Availability</th>      
-                    </tr>
-            </thead>";
-
+                echo 
+                "<div class='container bg-white' style='padding:10px;'>
+                <div class='row'>
+                    <div class='col-12'>
+                    <h4>Search results</h4>
+                    </div>
+                </div>";
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<tr>";
-                    echo "<td><center>" . $row["Book_id"] . "</center></td>";
-                    echo "<td><center>" . $row["Title"] . "</center></td>";
-                    echo "<td><center>" . $row["Author"] . "</center></td>";
-                    $reserved = ($row["Avalibility"] == 0) ? "Reserved" : "Available";
-                    echo "<td><center>" . $reserved . "</center></td>";
-                    echo "</tr>";
+                    product_card($row['product_id'],$row['name'],$row['MRP'],$row['manufacturer'],$row['description'],$row['units']);  
                 }
+                echo "</div>";
             } else {
                 echo "No Books available right now";
             }
-            unset($_POST['submit'], $_POST['reserve'], $_POST['title']);
             mysqli_close($con);
         }
+        unset($_POST['search']);
+        unset($_POST['product_name']);
     }
-
-    $con = mysqli_connect("localhost", "root", "", "library");
-    $borrowed_books_query = "SELECT books.Book_id,books.Title,reservations.Reserved_on FROM books inner join reservations 
-    ON reservations.Book_id=books.Book_id where USN='{$_SESSION['usn']}' ";
-    $result = mysqli_query($con, $borrowed_books_query);
-    if ($result) {
-        echo "<center>
-    <div class='row'>
-    <table class='table' style='width:50%' border='1'></center>
-    <h5>Books borrowed</h5>
-            <thead class='thead-dark'>
-                    <tr>
-                    <th>Book ID</th>
-                    <th>Book Title</th>
-                    <th>Borrowed on</th>
-                    </tr>
-            </thead>";
-        while ($row = mysqli_fetch_assoc($result)) {
-            echo "<tr>";
-            echo "<td><center>" . $row["Book_id"] . "</center></td>";
-            echo "<td><center>" . $row["Title"] . "</center></td>";
-            echo "<td><center>" . $row["Reserved_on"] . "</center></td>";
-            echo "</tr>";
-        }
-        echo "</div>";
-        $due_query = "SELECT DATEDIFF(CURRENT_DATE,reservations.Reserved_on) as NUM_DAYS FROM books inner join reservations 
-    ON reservations.Book_id=books.Book_id where USN='{$_SESSION['usn']}'";
-        $result = mysqli_query($con, $due_query);
-        $dues = 0;
-        while ($row = mysqli_fetch_assoc($result)) {
-            $row['NUM_DAYS'] = ($row["NUM_DAYS"] > 2 ? $row["NUM_DAYS"] - 2 : 0) * 2;
-            $dues += $row['NUM_DAYS'];
-        }
-        echo "<h5>Dues to be paid: $dues</h5>";
-    } else {
-        echo "</br><h5>You have reserved no books!</h5>";
+    else{
+        $con = mysqli_connect("localhost", "root", "", "sports");
+        $all_query = "SELECT * from products"; 
+        $result = mysqli_query($con, $all_query);
+        if ($result) {
+            echo 
+            "<div class='container-fluid bg-white' style='padding:10px;'>
+            <div class='row'>
+                <div class='col-12'>
+                <h4>Products</h4>
+                </div>
+            </div>";
+            while ($row = mysqli_fetch_assoc($result)) {
+                product_card($row['product_id'],$row['name'],$row['MRP'],$row['manufacturer'],$row['description'],$row['units']); 
+            }
+            echo '</div>';
+            mysqli_close($con);
     }
-
-    mysqli_close($con);
+}
+    
     if (count($errors) > 0) {
         foreach ($errors as $error) {
             echo $error;
